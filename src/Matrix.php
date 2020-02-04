@@ -36,7 +36,7 @@ class Matrix
 
     public static function deactivationHook()
     {
-
+        self::activationHook();
     }
 
     public static function uninstallHook()
@@ -68,9 +68,14 @@ class Matrix
             __( 'Matrix MLM'),
             'manage_options',
             'matrix',
-            'matrix_view',
+            ['MatrixMlm\Matrix', 'render'],
             'dashicons-chart-pie',
             null
         );
+    }
+
+    public static function render()
+    {
+        echo "<pre>AAA</pre>";
     }
 }
