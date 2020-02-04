@@ -2,20 +2,20 @@
 
 namespace MatrixMlm\Model;
 
-class Level {
+class Level extends ModelBase implements ModelImpl {
 
 	public $id;
 	public $parent_id;
 	public $percent;
 	public $created;
 	public $updated;
-	public $options;
-	public $table_name = 'levels';
 
 	function __construct(array... $args) {
 		foreach ( $args as $key => $value ) {
 			$this->options[$key] = $value;
 		}
+
+		$this->table_name = 'levels';
 	}
 
     /**
@@ -113,20 +113,42 @@ class Level {
 	 */
 	public function install(): array
 	{
-		return dbDelta($this->sql());
+        parent::install();
+
+        return dbDelta(
+            $this->sql()
+        );
 	}
 
-    private function sql(): string
+    /**
+     * @return array
+     */
+	public function update(): array
+    {
+        parent::update();
+
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function remove(): array
+    {
+        parent::remove();
+
+        return dbDelta(
+            "DROP TABLE `{$this->options['prefix']}{$this->options['table']}`"
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function sql(): string
     {
         global $wpdb;
-
-        if (!array_key_exists('prefix', $this->options)) {
-            $this->options['prefix'] = $wpdb->prefix;
-        }
-
-        if (!array_key_exists('table', $this->options)) {
-            $this->options['table'] = $this->table_name;
-        }
+        parent::install();
 
         return "
 			CREATE TABLE IF NOT EXISTS `{$this->options['table']}`.`{$this->options['prefix']}{$this->options['table']}` (

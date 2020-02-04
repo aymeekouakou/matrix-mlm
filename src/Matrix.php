@@ -31,7 +31,7 @@ class Matrix
         $level = new Level();
         $level->install();
 
-        add_option( 'matrix_db_version', MATRIX_MLM_DB_VERSION );
+        add_site_option( 'matrix_db_version', MATRIX_MLM_DB_VERSION );
     }
 
     public static function deactivationHook()
@@ -41,7 +41,16 @@ class Matrix
 
     public static function uninstallHook()
     {
+        $member = new Member();
+        $member->remove();
 
+        $commission = new Commission();
+        $commission->remove();
+
+        $level = new Level();
+        $level->remove();
+
+        delete_site_option( 'matrix_db_version' );
     }
 
     public static function dbChecker()

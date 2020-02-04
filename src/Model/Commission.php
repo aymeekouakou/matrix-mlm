@@ -2,7 +2,7 @@
 
 namespace MatrixMlm\Model;
 
-class Commission implements ModelImpl {
+class Commission extends ModelBase implements ModelImpl {
 
 	public $id;
 	public $member_id;
@@ -127,25 +127,48 @@ class Commission implements ModelImpl {
 		return $this;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function install(): array
-	{
-		return dbDelta($this->sql());
-	}
+    /**
+     * @return array
+     */
+    public function install(): array
+    {
+        parent::install();
 
-    public function sql()
+        return dbDelta(
+            $this->sql()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function update(): array
+    {
+        parent::update();
+
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function remove(): array
+    {
+        parent::remove();
+
+        return dbDelta(
+            "DROP TABLE `{$this->options['prefix']}{$this->options['table']}`"
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function sql(): string
     {
         global $wpdb;
 
-        if (!array_key_exists('prefix', $this->options)) {
-            $this->options['prefix'] = $wpdb->prefix;
-        }
-
-        if (!array_key_exists('table', $this->options)) {
-            $this->options['table'] = $this->table_name;
-        }
+        parent::install();
 
         return "
 			CREATE TABLE IF NOT EXISTS `{$this->options['table']}`.`{$this->options['prefix']}{$this->options['table']}` (

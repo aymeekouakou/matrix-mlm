@@ -3,10 +3,10 @@
 
 namespace MatrixMlm\Model;
 
-require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
 interface ModelImpl
 {
-    public function sql();
-    public function install();
+    public function sql(): string;
+    public function install(): array;
+    public function update(): array;
+    public function remove(): array;
 }
